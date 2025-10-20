@@ -68,7 +68,7 @@ namespace ClarityInChaos
     {
       // can't ref a property, so use a local copy
       var enabled = plugin.Configuration.Enabled;
-      if (ImGui.Checkbox("Master Enable", ref enabled))
+      if (ImGui.Checkbox("总开关", ref enabled))
       {
         plugin.Configuration.Enabled = enabled;
         plugin.Configuration.Save();
@@ -80,30 +80,30 @@ namespace ClarityInChaos
 
       if (plugin.Configuration.Enabled)
       {
-        ImGui.TextColored(green, $"Current BattleEffects: {activeConfig.Size}");
+        ImGui.TextColored(green, $"当前战斗特效设置: {activeConfig.Size}");
       }
       else
       {
-        ImGui.Text($"Current BattleEffects: Saved In-Game Settings");
+        ImGui.Text($"当前战斗特效设置: 游戏内保存的设置");
       }
 
       if (plugin.BattleEffectsConfigurator.IsTerritoryAllianceLike())
       {
         ImGui.SameLine();
-        ImGui.TextColored(green, $"(Misc. Duty detected)");
+        ImGui.TextColored(green, $"(检测到特殊副本)");
       }
 
       if (plugin.InPvP)
       {
         ImGui.SameLine();
         var yellow = new Vector4(255, 255, 0, 255);
-        ImGui.TextColored(yellow, $"(PvP detected)");
+        ImGui.TextColored(yellow, $"(检测到PvP)");
       }
 
       ImGui.Indent();
-      PrettyEffect("Self", plugin.BattleEffectsConfigurator.BattleEffectSelf);
-      PrettyEffect("Party", plugin.BattleEffectsConfigurator.BattleEffectParty);
-      PrettyEffect("Others", plugin.BattleEffectsConfigurator.BattleEffectOther);
+      PrettyEffect("自己", plugin.BattleEffectsConfigurator.BattleEffectSelf);
+      PrettyEffect("小队", plugin.BattleEffectsConfigurator.BattleEffectParty);
+      PrettyEffect("他人", plugin.BattleEffectsConfigurator.BattleEffectOther);
       ImGui.Unindent();
     }
 
@@ -112,13 +112,13 @@ namespace ClarityInChaos
       ImGui.TableNextRow();
 
       ImGui.TableSetColumnIndex(1);
-      ImGui.Text("  All  ");
+      ImGui.Text("完全显示");
 
       ImGui.TableSetColumnIndex(2);
-      ImGui.Text("Limited");
+      ImGui.Text("简单显示");
 
       ImGui.TableSetColumnIndex(3);
-      ImGui.Text("None");
+      ImGui.Text("不显示");
     }
 
     private bool DrawBattleEffectsTable(ref ConfigForGroupingSize config)
@@ -132,17 +132,17 @@ namespace ClarityInChaos
 
       DrawBattleEffectsTableHeader();
 
-      if (DrawBfxRadiosLine($"Own", ref self))
+      if (DrawBfxRadiosLine($"自己", ref self))
       {
         config.Self = self;
         changed = true;
       }
-      if (DrawBfxRadiosLine($"Party", ref party))
+      if (DrawBfxRadiosLine($"小队", ref party))
       {
         config.Party = party;
         changed = true;
       }
-      if (DrawBfxRadiosLine($"Others", ref other))
+      if (DrawBfxRadiosLine($"他人", ref other))
       {
         config.Other = other;
         changed = true;
@@ -156,19 +156,19 @@ namespace ClarityInChaos
       ImGui.TableNextRow();
 
       ImGui.TableSetColumnIndex(1);
-      ImGui.Text("Always");
+      ImGui.Text("一直显示");
 
       ImGui.TableSetColumnIndex(2);
-      ImGui.Text("During Battle");
+      ImGui.Text("战斗时显示");
 
       ImGui.TableSetColumnIndex(3);
-      ImGui.Text("Out of Battle");
+      ImGui.Text("非战斗时显示");
 
       ImGui.TableSetColumnIndex(4);
-      ImGui.Text("When Targeted");
+      ImGui.Text("选为目标时显示");
 
       ImGui.TableSetColumnIndex(5);
-      ImGui.Text("Never");
+      ImGui.Text("不显示");
     }
 
     private bool DrawNameplatesTable(ref ConfigForGroupingSize config)
@@ -185,37 +185,37 @@ namespace ClarityInChaos
 
       DrawNameplatesTableHeader();
 
-      if (DrawNameplatesRadiosLine($"Own", ref own))
+      if (DrawNameplatesRadiosLine($"自己", ref own))
       {
         config.OwnNameplate = own;
         changed = true;
       }
 
-      if (DrawNameplatesRadiosLine($"Party", ref party))
+      if (DrawNameplatesRadiosLine($"小队", ref party))
       {
         config.PartyNameplate = party;
         changed = true;
       }
 
-      if (DrawNameplatesRadiosLine($"Alliance", ref alliance))
+      if (DrawNameplatesRadiosLine($"团队", ref alliance))
       {
         config.AllianceNameplate = alliance;
         changed = true;
       }
 
-      if (DrawNameplatesRadiosLine($"Others", ref others))
+      if (DrawNameplatesRadiosLine($"他人", ref others))
       {
         config.OthersNameplate = others;
         changed = true;
       }
 
-      if (DrawNameplatesRadiosLine($"Friends", ref friends))
+      if (DrawNameplatesRadiosLine($"好友", ref friends))
       {
         config.FriendsNameplate = friends;
         changed = true;
       }
 
-      if (DrawEngagedEnemyNameplateRadiosLine($"Engaged Enemy", ref enemy))
+      if (DrawEngagedEnemyNameplateRadiosLine($"自己占有的敌人", ref enemy))
       {
         config.EngagedEnemyNameplate = enemy;
         changed = true;
@@ -275,7 +275,7 @@ namespace ClarityInChaos
       ImGui.TableNextRow();
 
       ImGui.TableSetColumnIndex(1);
-      ImGui.Text("Highlight                           ");
+      ImGui.Text("高亮显示                           ");
     }
 
     private bool DrawHighlightsTable(ref ConfigForGroupingSize config)
@@ -289,19 +289,19 @@ namespace ClarityInChaos
 
       DrawHighlightsTableHeader();
 
-      if (DrawHighlightsSelectLine($"Own", ref own))
+      if (DrawHighlightsSelectLine($"自己", ref own))
       {
         config.OwnHighlight = own;
         changed = true;
       }
 
-      if (DrawHighlightsSelectLine($"Party", ref party))
+      if (DrawHighlightsSelectLine($"小队", ref party))
       {
         config.PartyHighlight = party;
         changed = true;
       }
 
-      if (DrawHighlightsSelectLine($"Others", ref others))
+      if (DrawHighlightsSelectLine($"他人", ref others))
       {
         config.OthersHighlight = others;
         changed = true;
@@ -316,16 +316,16 @@ namespace ClarityInChaos
       ImGui.TableNextRow();
 
       ImGui.TableSetColumnIndex(1);
-      ImGui.Text("Always");
+      ImGui.Text("一直显示");
 
       ImGui.TableSetColumnIndex(2);
-      ImGui.Text("During Battle");
+      ImGui.Text("战斗时显示");
 
       ImGui.TableSetColumnIndex(3);
-      ImGui.Text("When HP < 100%");
+      ImGui.Text("体力减少时显示");
 
       ImGui.TableSetColumnIndex(4);
-      ImGui.Text("Never");
+      ImGui.Text("不显示");
     }
 
     private bool DrawHpBarsTable(ref ConfigForGroupingSize config)
@@ -342,37 +342,37 @@ namespace ClarityInChaos
 
       DrawHpBarsTableHeader();
 
-      if (DrawHpBarsRadiosLine($"Own", ref own))
+      if (DrawHpBarsRadiosLine($"自己", ref own))
       {
         config.OwnHpBar = own;
         changed = true;
       }
 
-      if (DrawHpBarsRadiosLine($"Party", ref party))
+      if (DrawHpBarsRadiosLine($"小队", ref party))
       {
         config.PartyHpBar = party;
         changed = true;
       }
 
-      if (DrawHpBarsRadiosLine($"Alliance", ref alliance))
+      if (DrawHpBarsRadiosLine($"团队", ref alliance))
       {
         config.AllianceHpBar = alliance;
         changed = true;
       }
 
-      if (DrawHpBarsRadiosLine($"Others", ref others))
+      if (DrawHpBarsRadiosLine($"他人", ref others))
       {
         config.OthersHpBar = others;
         changed = true;
       }
 
-      if (DrawHpBarsRadiosLine($"Friends", ref friends))
+      if (DrawHpBarsRadiosLine($"好友", ref friends))
       {
         config.FriendsHpBar = friends;
         changed = true;
       }
 
-      if (DrawEngagedEnemyHpBarRadiosLine($"Engaged Enemy", ref enemy))
+      if (DrawEngagedEnemyHpBarRadiosLine($"自己占有的敌人", ref enemy))
       {
         config.EngagedEnemyHpBar = enemy;
         changed = true;
@@ -477,7 +477,7 @@ namespace ClarityInChaos
 
       ImGui.BeginTabBar("TabBar");
 
-      if (ImGui.BeginTabItem("Battle Effects"))
+      if (ImGui.BeginTabItem("战斗特效"))
       {
         ImGui.Indent();
         changed |= DrawBattleEffectsTable(ref config);
@@ -485,7 +485,7 @@ namespace ClarityInChaos
         ImGui.EndTabItem();
       }
 
-      if (ImGui.BeginTabItem("Nameplates"))
+      if (ImGui.BeginTabItem("名牌显示"))
       {
         ImGui.Indent();
         changed |= DrawNameplatesTable(ref config);
@@ -493,7 +493,7 @@ namespace ClarityInChaos
         ImGui.EndTabItem();
       }
 
-      if (ImGui.BeginTabItem("Highlights"))
+      if (ImGui.BeginTabItem("高亮"))
       {
         ImGui.Indent();
         changed |= DrawHighlightsTable(ref config);
@@ -501,7 +501,7 @@ namespace ClarityInChaos
         ImGui.EndTabItem();
       }
 
-      if (ImGui.BeginTabItem("HP Bars"))
+      if (ImGui.BeginTabItem("体力栏"))
       {
         ImGui.Indent();
         changed |= DrawHpBarsTable(ref config);
@@ -511,7 +511,7 @@ namespace ClarityInChaos
 
       ImGui.BeginTable("Table2", 4);
       var onlyInDuty = config.OnlyInDuty;
-      if (config.Size != GroupingSize.Backup && config.Size != GroupingSize.Alliance && DrawOnlyInDutyCheckbox($"Only In Duty", ref onlyInDuty))
+      if (config.Size != GroupingSize.Backup && config.Size != GroupingSize.Alliance && DrawOnlyInDutyCheckbox($"仅在副本中生效", ref onlyInDuty))
       {
         config.OnlyInDuty = onlyInDuty;
         changed = true;
@@ -647,7 +647,7 @@ namespace ClarityInChaos
 
       ImGui.TableSetColumnIndex(1);
       var proximityColor = (int)color;
-      if (ImGui.Combo("##color", ref proximityColor, "None\0Red\0Green\0Blue\0Yellow\0Orange\0Magenta\0"))
+      if (ImGui.Combo("##color", ref proximityColor, "无\0红色\0绿色\0蓝色\0黄色\0橙色\0紫红色\0"))
       {
         color = (ObjectHighlightColor)proximityColor;
         changed = true;
@@ -674,12 +674,12 @@ namespace ClarityInChaos
     {
       string headerText = config.Size switch
       {
-        GroupingSize.Solo => "Solo",
-        GroupingSize.LightParty => "Light Party (4-man)",
-        GroupingSize.FullParty => "Full Party (8-man)",
-        GroupingSize.Alliance => "Alliance Raids (24-man Duty)",
+        GroupingSize.Solo => "单人",
+        GroupingSize.LightParty => "轻型小队 (4人)",
+        GroupingSize.FullParty => "满编小队 (8人)",
+        GroupingSize.Alliance => "团队副本 (24人)",
         GroupingSize.PvP => "PvP",
-        _ => "Saved In-Game Settings",
+        _ => "游戏内保存的设置",
       };
 
       if (isActive)
@@ -723,15 +723,15 @@ namespace ClarityInChaos
 
     public void DrawDebugSection()
     {
-      if (ImGui.CollapsingHeader("Debug Options"))
+      if (ImGui.CollapsingHeader("调试选项"))
       {
         ImGui.Indent();
 
-        ImGui.TextWrapped("Use these to test your settings.");
+        ImGui.TextWrapped("使用这些选项来测试你的设置。");
 
         var psize = plugin.Configuration.DebugPartySize;
         var forcePSize = plugin.Configuration.DebugForcePartySize;
-        if (ImGui.Checkbox("Force Party Size", ref forcePSize))
+        if (ImGui.Checkbox("强制小队人数", ref forcePSize))
         {
           plugin.Configuration.DebugForcePartySize = forcePSize;
           plugin.Configuration.Save();
@@ -744,14 +744,14 @@ namespace ClarityInChaos
         }
 
         var forceInDuty = plugin.Configuration.DebugForceInDuty;
-        if (ImGui.Checkbox("Force In Duty", ref forceInDuty))
+        if (ImGui.Checkbox("强制副本状态", ref forceInDuty))
         {
           plugin.Configuration.DebugForceInDuty = forceInDuty;
           plugin.Configuration.Save();
         }
 
         var forceInPvP = plugin.Configuration.DebugForceInPvP;
-        if (ImGui.Checkbox("Force In PvP", ref forceInPvP))
+        if (ImGui.Checkbox("强制PvP状态", ref forceInPvP))
         {
           plugin.Configuration.DebugForceInPvP = forceInPvP;
           plugin.Configuration.Save();

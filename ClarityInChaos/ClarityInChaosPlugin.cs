@@ -53,7 +53,7 @@ namespace ClarityInChaos
 
       CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
       {
-        HelpMessage = "opens the configuration window"
+        HelpMessage = "打开配置窗口"
       });
 
       Service.Framework.Update += BattleEffectsConfigurator.OnUpdate;

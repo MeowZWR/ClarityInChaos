@@ -428,7 +428,7 @@ namespace ClarityInChaos
       if (changed)
       {
         ClearHighlights();
-        plugin.PrintDebug("Updated UiSettings!");
+        plugin.PrintDebug("已更新界面设置!");
       }
 
       if (plugin.Configuration.Enabled)
