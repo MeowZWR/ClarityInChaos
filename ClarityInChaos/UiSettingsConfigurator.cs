@@ -124,6 +124,97 @@ namespace ClarityInChaos
       }
     }
 
+    public NameplateHpBarVisibility OwnHpBar
+    {
+      get
+      {
+        Service.GameConfig.TryGet(UiConfigOption.NamePlateHpTypeSelf, out uint hpSelf);
+        return (NameplateHpBarVisibility)hpSelf;
+      }
+      set
+      {
+        Service.GameConfig.Set(UiConfigOption.NamePlateHpTypeSelf, (uint)value);
+      }
+    }
+
+    public NameplateHpBarVisibility PartyHpBar
+    {
+      get
+      {
+        Service.GameConfig.TryGet(UiConfigOption.NamePlateHpTypeParty, out uint hpParty);
+        return (NameplateHpBarVisibility)hpParty;
+      }
+      set
+      {
+        Service.GameConfig.Set(UiConfigOption.NamePlateHpTypeParty, (uint)value);
+      }
+    }
+
+    public NameplateHpBarVisibility AllianceHpBar
+    {
+      get
+      {
+        Service.GameConfig.TryGet(UiConfigOption.NamePlateHpTypeAlliance, out uint hpAlliance);
+        return (NameplateHpBarVisibility)hpAlliance;
+      }
+      set
+      {
+        Service.GameConfig.Set(UiConfigOption.NamePlateHpTypeAlliance, (uint)value);
+      }
+    }
+
+    public NameplateHpBarVisibility OthersHpBar
+    {
+      get
+      {
+        Service.GameConfig.TryGet(UiConfigOption.NamePlateHpTypeOther, out uint hpOthers);
+        return (NameplateHpBarVisibility)hpOthers;
+      }
+      set
+      {
+        Service.GameConfig.Set(UiConfigOption.NamePlateHpTypeOther, (uint)value);
+      }
+    }
+
+    public NameplateHpBarVisibility FriendsHpBar
+    {
+      get
+      {
+        Service.GameConfig.TryGet(UiConfigOption.NamePlateHpTypeFriend, out uint hpFriends);
+        return (NameplateHpBarVisibility)hpFriends;
+      }
+      set
+      {
+        Service.GameConfig.Set(UiConfigOption.NamePlateHpTypeFriend, (uint)value);
+      }
+    }
+
+    public EngagedEnemyNameplateVisibility EngagedEnemyNameplate
+    {
+      get
+      {
+        Service.GameConfig.TryGet(UiConfigOption.NamePlateDispTypeEngagedEnemy, out uint npEnemy);
+        return (EngagedEnemyNameplateVisibility)npEnemy;
+      }
+      set
+      {
+        Service.GameConfig.Set(UiConfigOption.NamePlateDispTypeEngagedEnemy, (uint)value);
+      }
+    }
+
+    public EngagedEnemyHpBarVisibility EngagedEnemyHpBar
+    {
+      get
+      {
+        Service.GameConfig.TryGet(UiConfigOption.NamePlateHpTypeEngagedEmemy, out uint hpEnemy);
+        return (EngagedEnemyHpBarVisibility)hpEnemy;
+      }
+      set
+      {
+        Service.GameConfig.Set(UiConfigOption.NamePlateHpTypeEngagedEmemy, (uint)value);
+      }
+    }
+
     public UiSettingsConfigurator(ClarityInChaosPlugin plugin)
     {
       this.plugin = plugin;
@@ -143,6 +234,11 @@ namespace ClarityInChaos
 
     public GroupingSize GetCurrentGroupingSize()
     {
+      if (plugin.InPvP)
+      {
+        return GroupingSize.PvP;
+      }
+
       var memberCount = groupManager->MainGroup.MemberCount;
       var allianceFlags = groupManager->MainGroup.AllianceFlags;
 
@@ -182,12 +278,19 @@ namespace ClarityInChaos
       AllianceNameplate = backup.AllianceNameplate;
       OthersNameplate = backup.OthersNameplate;
       FriendsNameplate = backup.FriendsNameplate;
+      OwnHpBar = backup.OwnHpBar;
+      PartyHpBar = backup.PartyHpBar;
+      AllianceHpBar = backup.AllianceHpBar;
+      OthersHpBar = backup.OthersHpBar;
+      FriendsHpBar = backup.FriendsHpBar;
+      EngagedEnemyNameplate = backup.EngagedEnemyNameplate;
+      EngagedEnemyHpBar = backup.EngagedEnemyHpBar;
     }
 
     public void UIChange(GroupingSize size)
     {
-
-      var config = plugin.Configuration.GetConfigForGroupingSize(size, plugin.BoundByDuty);
+      var inDuty = size == GroupingSize.PvP || plugin.BoundByDuty;
+      var config = plugin.Configuration.GetConfigForGroupingSize(size, inDuty);
       BattleEffectSelf = config.Self;
       BattleEffectParty = config.Party;
       BattleEffectOther = config.Other;
@@ -196,12 +299,21 @@ namespace ClarityInChaos
       AllianceNameplate = config.AllianceNameplate;
       OthersNameplate = config.OthersNameplate;
       FriendsNameplate = config.FriendsNameplate;
+      OwnHpBar = config.OwnHpBar;
+      PartyHpBar = config.PartyHpBar;
+      AllianceHpBar = config.AllianceHpBar;
+      OthersHpBar = config.OthersHpBar;
+      FriendsHpBar = config.FriendsHpBar;
+      EngagedEnemyNameplate = config.EngagedEnemyNameplate;
+      EngagedEnemyHpBar = config.EngagedEnemyHpBar;
       ClearHighlights();
     }
 
     public void OnUpdate(IFramework framework)
     {
-      var activeConfig = plugin.Configuration.GetConfigForGroupingSize(GetCurrentGroupingSize(), plugin.BoundByDuty);
+      var groupSize = GetCurrentGroupingSize();
+      var inDuty = groupSize == GroupingSize.PvP || plugin.BoundByDuty;
+      var activeConfig = plugin.Configuration.GetConfigForGroupingSize(groupSize, inDuty);
 
       if (!plugin.Configuration.Enabled)
       {
@@ -220,6 +332,13 @@ namespace ClarityInChaos
         AllianceNameplate = activeConfig.AllianceNameplate;
         OthersNameplate = activeConfig.OthersNameplate;
         FriendsNameplate = activeConfig.FriendsNameplate;
+        OwnHpBar = activeConfig.OwnHpBar;
+        PartyHpBar = activeConfig.PartyHpBar;
+        AllianceHpBar = activeConfig.AllianceHpBar;
+        OthersHpBar = activeConfig.OthersHpBar;
+        FriendsHpBar = activeConfig.FriendsHpBar;
+        EngagedEnemyNameplate = activeConfig.EngagedEnemyNameplate;
+        EngagedEnemyHpBar = activeConfig.EngagedEnemyHpBar;
         changed = true;
       }
       else
@@ -262,6 +381,41 @@ namespace ClarityInChaos
         if (FriendsNameplate != activeConfig.FriendsNameplate)
         {
           activeConfig.FriendsNameplate = FriendsNameplate;
+          changed = true;
+        }
+        if (OwnHpBar != activeConfig.OwnHpBar)
+        {
+          activeConfig.OwnHpBar = OwnHpBar;
+          changed = true;
+        }
+        if (PartyHpBar != activeConfig.PartyHpBar)
+        {
+          activeConfig.PartyHpBar = PartyHpBar;
+          changed = true;
+        }
+        if (AllianceHpBar != activeConfig.AllianceHpBar)
+        {
+          activeConfig.AllianceHpBar = AllianceHpBar;
+          changed = true;
+        }
+        if (OthersHpBar != activeConfig.OthersHpBar)
+        {
+          activeConfig.OthersHpBar = OthersHpBar;
+          changed = true;
+        }
+        if (FriendsHpBar != activeConfig.FriendsHpBar)
+        {
+          activeConfig.FriendsHpBar = FriendsHpBar;
+          changed = true;
+        }
+        if (EngagedEnemyNameplate != activeConfig.EngagedEnemyNameplate)
+        {
+          activeConfig.EngagedEnemyNameplate = EngagedEnemyNameplate;
+          changed = true;
+        }
+        if (EngagedEnemyHpBar != activeConfig.EngagedEnemyHpBar)
+        {
+          activeConfig.EngagedEnemyHpBar = EngagedEnemyHpBar;
           changed = true;
         }
 

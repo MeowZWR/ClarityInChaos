@@ -93,10 +93,17 @@ namespace ClarityInChaos
         ImGui.TextColored(green, $"(Misc. Duty detected)");
       }
 
+      if (plugin.InPvP)
+      {
+        ImGui.SameLine();
+        var yellow = new Vector4(255, 255, 0, 255);
+        ImGui.TextColored(yellow, $"(PvP detected)");
+      }
+
       ImGui.Indent();
       PrettyEffect("Self", plugin.BattleEffectsConfigurator.BattleEffectSelf);
       PrettyEffect("Party", plugin.BattleEffectsConfigurator.BattleEffectParty);
-      PrettyEffect("Others (excl. PvP)", plugin.BattleEffectsConfigurator.BattleEffectOther);
+      PrettyEffect("Others", plugin.BattleEffectsConfigurator.BattleEffectOther);
       ImGui.Unindent();
     }
 
@@ -135,7 +142,7 @@ namespace ClarityInChaos
         config.Party = party;
         changed = true;
       }
-      if (DrawBfxRadiosLine($"Others (excl. PvP)", ref other))
+      if (DrawBfxRadiosLine($"Others", ref other))
       {
         config.Other = other;
         changed = true;
@@ -174,6 +181,7 @@ namespace ClarityInChaos
       var alliance = config.AllianceNameplate;
       var others = config.OthersNameplate;
       var friends = config.FriendsNameplate;
+      var enemy = config.EngagedEnemyNameplate;
 
       DrawNameplatesTableHeader();
 
@@ -207,7 +215,58 @@ namespace ClarityInChaos
         changed = true;
       }
 
+      if (DrawEngagedEnemyNameplateRadiosLine($"Engaged Enemy", ref enemy))
+      {
+        config.EngagedEnemyNameplate = enemy;
+        changed = true;
+      }
+
       ImGui.EndTable();
+      return changed;
+    }
+
+    private bool DrawEngagedEnemyNameplateRadiosLine(string label, ref EngagedEnemyNameplateVisibility visibility)
+    {
+      var changed = false;
+
+      ImGui.TableNextRow();
+      ImGui.TableSetColumnIndex(0);
+      ImGui.Text(label);
+
+      ImGui.PushID(label);
+
+      ImGui.TableSetColumnIndex(1);
+      ImGui.SetCursorPosX(ImGui.GetCursorPos().X + (ImGui.GetContentRegionAvail().X - 24) / 2f);
+      if (ImGui.RadioButton($"##Always", visibility is EngagedEnemyNameplateVisibility.Always))
+      {
+        visibility = EngagedEnemyNameplateVisibility.Always;
+        changed = true;
+      }
+
+      ImGui.TableSetColumnIndex(2);
+      // Skip "During Battle" column
+
+      ImGui.TableSetColumnIndex(3);
+      // Skip "Out of Battle" column
+
+      ImGui.TableSetColumnIndex(4);
+      ImGui.SetCursorPosX(ImGui.GetCursorPos().X + (ImGui.GetContentRegionAvail().X - 24) / 2f);
+      if (ImGui.RadioButton($"##When Targeted", visibility is EngagedEnemyNameplateVisibility.WhenTargeted))
+      {
+        visibility = EngagedEnemyNameplateVisibility.WhenTargeted;
+        changed = true;
+      }
+
+      ImGui.TableSetColumnIndex(5);
+      ImGui.SetCursorPosX(ImGui.GetCursorPos().X + (ImGui.GetContentRegionAvail().X - 24) / 2f);
+      if (ImGui.RadioButton($"##Never", visibility is EngagedEnemyNameplateVisibility.Never))
+      {
+        visibility = EngagedEnemyNameplateVisibility.Never;
+        changed = true;
+      }
+
+      ImGui.PopID();
+
       return changed;
     }
 
@@ -252,6 +311,166 @@ namespace ClarityInChaos
       return changed;
     }
 
+    private void DrawHpBarsTableHeader()
+    {
+      ImGui.TableNextRow();
+
+      ImGui.TableSetColumnIndex(1);
+      ImGui.Text("Always");
+
+      ImGui.TableSetColumnIndex(2);
+      ImGui.Text("During Battle");
+
+      ImGui.TableSetColumnIndex(3);
+      ImGui.Text("When HP < 100%");
+
+      ImGui.TableSetColumnIndex(4);
+      ImGui.Text("Never");
+    }
+
+    private bool DrawHpBarsTable(ref ConfigForGroupingSize config)
+    {
+      var changed = false;
+      ImGui.BeginTable("Table", 5);
+
+      var own = config.OwnHpBar;
+      var party = config.PartyHpBar;
+      var alliance = config.AllianceHpBar;
+      var others = config.OthersHpBar;
+      var friends = config.FriendsHpBar;
+      var enemy = config.EngagedEnemyHpBar;
+
+      DrawHpBarsTableHeader();
+
+      if (DrawHpBarsRadiosLine($"Own", ref own))
+      {
+        config.OwnHpBar = own;
+        changed = true;
+      }
+
+      if (DrawHpBarsRadiosLine($"Party", ref party))
+      {
+        config.PartyHpBar = party;
+        changed = true;
+      }
+
+      if (DrawHpBarsRadiosLine($"Alliance", ref alliance))
+      {
+        config.AllianceHpBar = alliance;
+        changed = true;
+      }
+
+      if (DrawHpBarsRadiosLine($"Others", ref others))
+      {
+        config.OthersHpBar = others;
+        changed = true;
+      }
+
+      if (DrawHpBarsRadiosLine($"Friends", ref friends))
+      {
+        config.FriendsHpBar = friends;
+        changed = true;
+      }
+
+      if (DrawEngagedEnemyHpBarRadiosLine($"Engaged Enemy", ref enemy))
+      {
+        config.EngagedEnemyHpBar = enemy;
+        changed = true;
+      }
+
+      ImGui.EndTable();
+      return changed;
+    }
+
+    private bool DrawEngagedEnemyHpBarRadiosLine(string label, ref EngagedEnemyHpBarVisibility visibility)
+    {
+      var changed = false;
+
+      ImGui.TableNextRow();
+      ImGui.TableSetColumnIndex(0);
+      ImGui.Text(label);
+
+      ImGui.PushID(label);
+
+      ImGui.TableSetColumnIndex(1);
+      ImGui.SetCursorPosX(ImGui.GetCursorPos().X + (ImGui.GetContentRegionAvail().X - 24) / 2f);
+      if (ImGui.RadioButton($"##Always", visibility is EngagedEnemyHpBarVisibility.Always))
+      {
+        visibility = EngagedEnemyHpBarVisibility.Always;
+        changed = true;
+      }
+
+      ImGui.TableSetColumnIndex(2);
+      // Skip "During Battle" column
+
+      ImGui.TableSetColumnIndex(3);
+      ImGui.SetCursorPosX(ImGui.GetCursorPos().X + (ImGui.GetContentRegionAvail().X - 24) / 2f);
+      if (ImGui.RadioButton($"##When HP Not Full", visibility is EngagedEnemyHpBarVisibility.WhenHpNotFull))
+      {
+        visibility = EngagedEnemyHpBarVisibility.WhenHpNotFull;
+        changed = true;
+      }
+
+      ImGui.TableSetColumnIndex(4);
+      ImGui.SetCursorPosX(ImGui.GetCursorPos().X + (ImGui.GetContentRegionAvail().X - 24) / 2f);
+      if (ImGui.RadioButton($"##Never", visibility is EngagedEnemyHpBarVisibility.Never))
+      {
+        visibility = EngagedEnemyHpBarVisibility.Never;
+        changed = true;
+      }
+
+      ImGui.PopID();
+
+      return changed;
+    }
+
+    private bool DrawHpBarsRadiosLine(string label, ref NameplateHpBarVisibility visibility)
+    {
+      var changed = false;
+
+      ImGui.TableNextRow();
+      ImGui.TableSetColumnIndex(0);
+      ImGui.Text(label);
+
+      ImGui.PushID(label);
+
+      ImGui.TableSetColumnIndex(1);
+      ImGui.SetCursorPosX(ImGui.GetCursorPos().X + (ImGui.GetContentRegionAvail().X - 24) / 2f);
+      if (ImGui.RadioButton($"##Always", visibility is NameplateHpBarVisibility.Always))
+      {
+        visibility = NameplateHpBarVisibility.Always;
+        changed = true;
+      }
+
+      ImGui.TableSetColumnIndex(2);
+      ImGui.SetCursorPosX(ImGui.GetCursorPos().X + (ImGui.GetContentRegionAvail().X - 24) / 2f);
+      if (ImGui.RadioButton($"##During Battle", visibility is NameplateHpBarVisibility.DuringBattle))
+      {
+        visibility = NameplateHpBarVisibility.DuringBattle;
+        changed = true;
+      }
+
+      ImGui.TableSetColumnIndex(3);
+      ImGui.SetCursorPosX(ImGui.GetCursorPos().X + (ImGui.GetContentRegionAvail().X - 24) / 2f);
+      if (ImGui.RadioButton($"##When HP Not Full", visibility is NameplateHpBarVisibility.WhenHpNotFull))
+      {
+        visibility = NameplateHpBarVisibility.WhenHpNotFull;
+        changed = true;
+      }
+
+      ImGui.TableSetColumnIndex(4);
+      ImGui.SetCursorPosX(ImGui.GetCursorPos().X + (ImGui.GetContentRegionAvail().X - 24) / 2f);
+      if (ImGui.RadioButton($"##Never", visibility is NameplateHpBarVisibility.Never))
+      {
+        visibility = NameplateHpBarVisibility.Never;
+        changed = true;
+      }
+
+      ImGui.PopID();
+
+      return changed;
+    }
+
     private bool DrawTableGroup(ref ConfigForGroupingSize config)
     {
       var changed = false;
@@ -278,6 +497,14 @@ namespace ClarityInChaos
       {
         ImGui.Indent();
         changed |= DrawHighlightsTable(ref config);
+        ImGui.Unindent();
+        ImGui.EndTabItem();
+      }
+
+      if (ImGui.BeginTabItem("HP Bars"))
+      {
+        ImGui.Indent();
+        changed |= DrawHpBarsTable(ref config);
         ImGui.Unindent();
         ImGui.EndTabItem();
       }
@@ -451,6 +678,7 @@ namespace ClarityInChaos
         GroupingSize.LightParty => "Light Party (4-man)",
         GroupingSize.FullParty => "Full Party (8-man)",
         GroupingSize.Alliance => "Alliance Raids (24-man Duty)",
+        GroupingSize.PvP => "PvP",
         _ => "Saved In-Game Settings",
       };
 
@@ -485,6 +713,7 @@ namespace ClarityInChaos
 
     private void DrawBattleEffectsMatrixSection(ConfigForGroupingSize activeConfig)
     {
+      DrawPrettyHeader(plugin.Configuration.PvP, plugin.Configuration.PvP == activeConfig && plugin.Configuration.Enabled);
       DrawPrettyHeader(plugin.Configuration.Solo, plugin.Configuration.Solo == activeConfig && plugin.Configuration.Enabled);
       DrawPrettyHeader(plugin.Configuration.LightParty, plugin.Configuration.LightParty == activeConfig && plugin.Configuration.Enabled);
       DrawPrettyHeader(plugin.Configuration.FullParty, plugin.Configuration.FullParty == activeConfig && plugin.Configuration.Enabled);
@@ -521,6 +750,13 @@ namespace ClarityInChaos
           plugin.Configuration.Save();
         }
 
+        var forceInPvP = plugin.Configuration.DebugForceInPvP;
+        if (ImGui.Checkbox("Force In PvP", ref forceInPvP))
+        {
+          plugin.Configuration.DebugForceInPvP = forceInPvP;
+          plugin.Configuration.Save();
+        }
+
         ImGui.Unindent();
       }
     }
@@ -528,7 +764,8 @@ namespace ClarityInChaos
     public override void Draw()
     {
       var groupSize = plugin.BattleEffectsConfigurator.GetCurrentGroupingSize();
-      var activeConfig = plugin.Configuration.GetConfigForGroupingSize(groupSize, plugin.BoundByDuty);
+      var inDuty = groupSize == GroupingSize.PvP || plugin.BoundByDuty;
+      var activeConfig = plugin.Configuration.GetConfigForGroupingSize(groupSize, inDuty);
 
       DrawSectionMasterEnable(activeConfig);
 

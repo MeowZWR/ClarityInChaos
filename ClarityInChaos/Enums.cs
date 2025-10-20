@@ -7,6 +7,7 @@ namespace ClarityInChaos
     LightParty,
     FullParty,
     Alliance,
+    PvP,
   }
 
   public enum BattleEffect
@@ -35,5 +36,27 @@ namespace ClarityInChaos
     Orange,
     Magenta,
     Black
+  }
+
+  public enum NameplateHpBarVisibility
+  {
+    Always,
+    DuringBattle,
+    WhenHpNotFull,
+    Never
+  }
+
+  public enum EngagedEnemyNameplateVisibility
+  {
+    Always,
+    WhenTargeted,
+    Never
+  }
+
+  public enum EngagedEnemyHpBarVisibility
+  {
+    Always,
+    WhenHpNotFull,
+    Never
   }
 }

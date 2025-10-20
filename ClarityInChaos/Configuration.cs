@@ -20,12 +20,14 @@ namespace ClarityInChaos
     public ConfigForLightParty LightParty { get; init; }
     public ConfigForFullParty FullParty { get; init; }
     public ConfigForAlliance Alliance { get; init; }
+    public ConfigForPvP PvP { get; init; }
 
     public bool DebugMessages = false;
 
     public bool DebugForcePartySize = false;
     public int DebugPartySize = 0;
     public bool DebugForceInDuty = false;
+    public bool DebugForceInPvP = false;
 
     // the below exist just to make saving less cumbersome
     [NonSerialized]
@@ -38,6 +40,7 @@ namespace ClarityInChaos
       LightParty = new ConfigForLightParty();
       FullParty = new ConfigForFullParty();
       Alliance = new ConfigForAlliance();
+      PvP = new ConfigForPvP();
 
       if (isFresh)
       {
@@ -46,6 +49,7 @@ namespace ClarityInChaos
         ApplyDefaultConfig(LightParty);
         ApplyDefaultConfig(FullParty);
         ApplyDefaultConfig(Alliance);
+        ApplyDefaultConfig(PvP);
       }
     }
 
@@ -78,6 +82,21 @@ namespace ClarityInChaos
       config.OthersNameplate = (NameplateVisibility)npOthers;
       Service.GameConfig.TryGet(UiConfigOption.NamePlateDispTypeFriend, out uint npFriends);
       config.FriendsNameplate = (NameplateVisibility)npFriends;
+      Service.GameConfig.TryGet(UiConfigOption.NamePlateDispTypeEngagedEnemy, out uint npEnemy);
+      config.EngagedEnemyNameplate = (EngagedEnemyNameplateVisibility)npEnemy;
+
+      Service.GameConfig.TryGet(UiConfigOption.NamePlateHpTypeSelf, out uint hpSelf);
+      config.OwnHpBar = (NameplateHpBarVisibility)hpSelf;
+      Service.GameConfig.TryGet(UiConfigOption.NamePlateHpTypeParty, out uint hpParty);
+      config.PartyHpBar = (NameplateHpBarVisibility)hpParty;
+      Service.GameConfig.TryGet(UiConfigOption.NamePlateHpTypeAlliance, out uint hpAlliance);
+      config.AllianceHpBar = (NameplateHpBarVisibility)hpAlliance;
+      Service.GameConfig.TryGet(UiConfigOption.NamePlateHpTypeOther, out uint hpOthers);
+      config.OthersHpBar = (NameplateHpBarVisibility)hpOthers;
+      Service.GameConfig.TryGet(UiConfigOption.NamePlateHpTypeFriend, out uint hpFriends);
+      config.FriendsHpBar = (NameplateHpBarVisibility)hpFriends;
+      Service.GameConfig.TryGet(UiConfigOption.NamePlateHpTypeEngagedEmemy, out uint hpEnemy);
+      config.EngagedEnemyHpBar = (EngagedEnemyHpBarVisibility)hpEnemy;
     }
 
     private ConfigForGroupingSize GetConfigForGroupingSize(GroupingSize size)
@@ -88,6 +107,7 @@ namespace ClarityInChaos
         GroupingSize.LightParty => LightParty,
         GroupingSize.FullParty => FullParty,
         GroupingSize.Alliance => Alliance,
+        GroupingSize.PvP => PvP,
         _ => Backup,
       };
     }
@@ -134,6 +154,14 @@ namespace ClarityInChaos
     public NameplateVisibility AllianceNameplate { get; set; }
     public NameplateVisibility OthersNameplate { get; set; }
     public NameplateVisibility FriendsNameplate { get; set; }
+    public EngagedEnemyNameplateVisibility EngagedEnemyNameplate { get; set; }
+
+    public NameplateHpBarVisibility OwnHpBar { get; set; }
+    public NameplateHpBarVisibility PartyHpBar { get; set; }
+    public NameplateHpBarVisibility AllianceHpBar { get; set; }
+    public NameplateHpBarVisibility OthersHpBar { get; set; }
+    public NameplateHpBarVisibility FriendsHpBar { get; set; }
+    public EngagedEnemyHpBarVisibility EngagedEnemyHpBar { get; set; }
 
     public ObjectHighlightColor OwnHighlight { get; set; }
     public ObjectHighlightColor PartyHighlight { get; set; }
@@ -165,5 +193,10 @@ namespace ClarityInChaos
   public class ConfigForAlliance : ConfigForGroupingSize
   {
     public override GroupingSize Size => GroupingSize.Alliance;
+  }
+
+  public class ConfigForPvP : ConfigForGroupingSize
+  {
+    public override GroupingSize Size => GroupingSize.PvP;
   }
 }
