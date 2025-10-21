@@ -26,8 +26,7 @@ namespace ClarityInChaos
                                 && !Service.Condition[ConditionFlag.OccupiedInCutSceneEvent]);
 
     public bool InPvP => Configuration.DebugForceInPvP ||
-                        Service.Condition[ConditionFlag.BoundByDuty56] ||
-                        Service.Condition[ConditionFlag.BoundByDuty95];
+                        Service.ClientState.IsPvP;
 
     public ClarityInChaosPlugin(
         IDalamudPluginInterface pluginInterface,
