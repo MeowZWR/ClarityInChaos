@@ -214,6 +214,48 @@ namespace ClarityInChaos
       }
     }
 
+    private static NameplateVisibility GetTitle(UiConfigOption option)
+    {
+      Service.GameConfig.TryGet(option, out uint val);
+      return val == 1 ? NameplateVisibility.Always : NameplateVisibility.Never;
+    }
+
+    private static void SetTitle(UiConfigOption option, NameplateVisibility value)
+    {
+      uint gameVal = value == NameplateVisibility.Always ? 1u : 0u;
+      Service.GameConfig.Set(option, gameVal);
+    }
+
+    public NameplateVisibility OwnTitle
+    {
+      get => GetTitle(UiConfigOption.NamePlateNameTitleTypeSelf);
+      set => SetTitle(UiConfigOption.NamePlateNameTitleTypeSelf, value);
+    }
+
+    public NameplateVisibility PartyTitle
+    {
+      get => GetTitle(UiConfigOption.NamePlateNameTitleTypeParty);
+      set => SetTitle(UiConfigOption.NamePlateNameTitleTypeParty, value);
+    }
+
+    public NameplateVisibility AllianceTitle
+    {
+      get => GetTitle(UiConfigOption.NamePlateNameTitleTypeAlliance);
+      set => SetTitle(UiConfigOption.NamePlateNameTitleTypeAlliance, value);
+    }
+
+    public NameplateVisibility OthersTitle
+    {
+      get => GetTitle(UiConfigOption.NamePlateNameTitleTypeOther);
+      set => SetTitle(UiConfigOption.NamePlateNameTitleTypeOther, value);
+    }
+
+    public NameplateVisibility FriendsTitle
+    {
+      get => GetTitle(UiConfigOption.NamePlateNameTitleTypeFriend);
+      set => SetTitle(UiConfigOption.NamePlateNameTitleTypeFriend, value);
+    }
+
     public UiSettingsConfigurator(ClarityInChaosPlugin plugin)
     {
       this.plugin = plugin;
@@ -284,6 +326,11 @@ namespace ClarityInChaos
       FriendsHpBar = backup.FriendsHpBar;
       EngagedEnemyNameplate = backup.EngagedEnemyNameplate;
       EngagedEnemyHpBar = backup.EngagedEnemyHpBar;
+      OwnTitle = backup.OwnTitle;
+      PartyTitle = backup.PartyTitle;
+      AllianceTitle = backup.AllianceTitle;
+      OthersTitle = backup.OthersTitle;
+      FriendsTitle = backup.FriendsTitle;
     }
 
     public void UIChange(GroupingSize size)
@@ -305,6 +352,11 @@ namespace ClarityInChaos
       FriendsHpBar = config.FriendsHpBar;
       EngagedEnemyNameplate = config.EngagedEnemyNameplate;
       EngagedEnemyHpBar = config.EngagedEnemyHpBar;
+      OwnTitle = config.OwnTitle;
+      PartyTitle = config.PartyTitle;
+      AllianceTitle = config.AllianceTitle;
+      OthersTitle = config.OthersTitle;
+      FriendsTitle = config.FriendsTitle;
       ClearHighlights();
     }
 
@@ -338,6 +390,11 @@ namespace ClarityInChaos
         FriendsHpBar = activeConfig.FriendsHpBar;
         EngagedEnemyNameplate = activeConfig.EngagedEnemyNameplate;
         EngagedEnemyHpBar = activeConfig.EngagedEnemyHpBar;
+        OwnTitle = activeConfig.OwnTitle;
+        PartyTitle = activeConfig.PartyTitle;
+        AllianceTitle = activeConfig.AllianceTitle;
+        OthersTitle = activeConfig.OthersTitle;
+        FriendsTitle = activeConfig.FriendsTitle;
         changed = true;
       }
       else
@@ -415,6 +472,31 @@ namespace ClarityInChaos
         if (EngagedEnemyHpBar != activeConfig.EngagedEnemyHpBar)
         {
           activeConfig.EngagedEnemyHpBar = EngagedEnemyHpBar;
+          changed = true;
+        }
+        if (OwnTitle != activeConfig.OwnTitle)
+        {
+          activeConfig.OwnTitle = OwnTitle;
+          changed = true;
+        }
+        if (PartyTitle != activeConfig.PartyTitle)
+        {
+          activeConfig.PartyTitle = PartyTitle;
+          changed = true;
+        }
+        if (AllianceTitle != activeConfig.AllianceTitle)
+        {
+          activeConfig.AllianceTitle = AllianceTitle;
+          changed = true;
+        }
+        if (OthersTitle != activeConfig.OthersTitle)
+        {
+          activeConfig.OthersTitle = OthersTitle;
+          changed = true;
+        }
+        if (FriendsTitle != activeConfig.FriendsTitle)
+        {
+          activeConfig.FriendsTitle = FriendsTitle;
           changed = true;
         }
 

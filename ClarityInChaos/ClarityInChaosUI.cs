@@ -171,6 +171,17 @@ namespace ClarityInChaos
       ImGui.Text("不显示");
     }
 
+    private static void DrawTitlesTableHeader()
+    {
+      ImGui.TableNextRow();
+
+      ImGui.TableSetColumnIndex(1);
+      ImGui.Text("一直显示");
+
+      ImGui.TableSetColumnIndex(5);
+      ImGui.Text("不显示");
+    }
+
     private bool DrawNameplatesTable(ref ConfigForGroupingSize config)
     {
       var changed = false;
@@ -267,6 +278,53 @@ namespace ClarityInChaos
 
       ImGui.PopID();
 
+      return changed;
+    }
+
+    private static bool DrawTitlesTable(ref ConfigForGroupingSize config)
+    {
+      var changed = false;
+      ImGui.BeginTable("TableTitles", 6);
+
+      var own = config.OwnTitle;
+      var party = config.PartyTitle;
+      var alliance = config.AllianceTitle;
+      var others = config.OthersTitle;
+      var friends = config.FriendsTitle;
+
+      DrawTitlesTableHeader();
+
+      if (DrawTitlesRadiosLine($"自己", ref own))
+      {
+        config.OwnTitle = own;
+        changed = true;
+      }
+
+      if (DrawTitlesRadiosLine($"小队", ref party))
+      {
+        config.PartyTitle = party;
+        changed = true;
+      }
+
+      if (DrawTitlesRadiosLine($"团队", ref alliance))
+      {
+        config.AllianceTitle = alliance;
+        changed = true;
+      }
+
+      if (DrawTitlesRadiosLine($"他人", ref others))
+      {
+        config.OthersTitle = others;
+        changed = true;
+      }
+
+      if (DrawTitlesRadiosLine($"好友", ref friends))
+      {
+        config.FriendsTitle = friends;
+        changed = true;
+      }
+
+      ImGui.EndTable();
       return changed;
     }
 
@@ -493,6 +551,14 @@ namespace ClarityInChaos
         ImGui.EndTabItem();
       }
 
+      if (ImGui.BeginTabItem("称号"))
+      {
+        ImGui.Indent();
+        changed |= DrawTitlesTable(ref config);
+        ImGui.Unindent();
+        ImGui.EndTabItem();
+      }
+
       if (ImGui.BeginTabItem("高亮"))
       {
         ImGui.Indent();
@@ -619,6 +685,37 @@ namespace ClarityInChaos
       if (ImGui.RadioButton($"##When Targeted", effect is NameplateVisibility.WhenTargeted))
       {
         effect = NameplateVisibility.WhenTargeted;
+        changed = true;
+      }
+
+      ImGui.TableSetColumnIndex(5);
+      ImGui.SetCursorPosX(ImGui.GetCursorPos().X + (ImGui.GetContentRegionAvail().X - 24) / 2f);
+      if (ImGui.RadioButton($"##Never", effect is NameplateVisibility.Never))
+      {
+        effect = NameplateVisibility.Never;
+        changed = true;
+      }
+
+      ImGui.PopID();
+
+      return changed;
+    }
+
+    private static bool DrawTitlesRadiosLine(string label, ref NameplateVisibility effect)
+    {
+      var changed = false;
+
+      ImGui.TableNextRow();
+      ImGui.TableSetColumnIndex(0);
+      ImGui.Text(label);
+
+      ImGui.PushID(label);
+
+      ImGui.TableSetColumnIndex(1);
+      ImGui.SetCursorPosX(ImGui.GetCursorPos().X + (ImGui.GetContentRegionAvail().X - 24) / 2f);
+      if (ImGui.RadioButton($"##Always", effect is NameplateVisibility.Always))
+      {
+        effect = NameplateVisibility.Always;
         changed = true;
       }
 
