@@ -1,9 +1,9 @@
 {
   "Author": "Meoiswa",
-  "Name": "Clarity In Chaos",
+  "Name": "Clarity In Chaos X",
   "Punchline": "Seek visual serenity in the midst of Chaos",
   "Description": "Automatically adjusts the Battle Effects settings according to Party size.",
-  "InternalName": "ClarityInChaos",
+  "InternalName": "ClarityInChaosX",
   "ApplicableVersion": "any",
   "Tags": [
     "UI",
